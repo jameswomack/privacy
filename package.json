@@ -4,7 +4,7 @@
   "description": "CLI utility to modify a package.json to use a private npm registry",
   "main": "index.js",
   "bin": {
-    "npm-protect": "npm-protect.js"
+    "npm-protect": "bin/npm-protect.js"
   },
   "dependencies": {
     "dotjson": "~0.1.3",
