@@ -26,8 +26,9 @@ Usage: $0 [options]
     .describe('h', 'show help')
   .alias('r','registry')
     .describe('r', 'gets or sets the current module\'s registry url')
-  .alias('g','global')
-    .describe('g', 'gets or sets the default registry used when protecting a module')
+  .alias('l','licenseText')
+    .describe('l', 'The text to save in LICENSE as a SPDX-compatible license file')
+    .default('l', '(c) '+(new Date()).getFullYear()+' Jane Doe')
 var argv = optimist.argv
 
 
@@ -36,60 +37,21 @@ if (argv.help) {
   process.exit()
 }
 
-const REGISTRY_KEY = 'publishConfig.registry'
+const LICENSE_FILENAME = 'LICENSE'
+const LICENSE_VALUE = 'LicenseRef-LICENSE'
 const LOCAL = path.resolve(process.cwd(), 'package.json')
-const GLOBAL = path.resolve(__dirname, '.config')
 
-if (argv.registry) {
-  if (typeof argv.registry === 'string') {
-    dotjson.set(LOCAL, argv.registry)
-  } else {
-    getRegistry(LOCAL)
+if (argv.registry || argv.licenseText) {
+  if (argv.registry) {
+    dotjson.set(LOCAL, {
+      'publishConfig.registry': argv.registry
+    })
+  }
+  if (argv.licenseText) {
+    fs.writeFileSync(LICENSE_FILENAME, argv.licenseText)
+    dotjson.set(LOCAL, {
+      'license': LICENSE_VALUE
+    })
   }
   process.exit()
-}
-
-if (argv.global) {
-  if (typeof argv.global === 'string') {
-    var setter = {}
-    setter[REGISTRY_KEY] = argv.global
-    return dotjson.set(GLOBAL, setter, {createFile: true})
-  } else {
-    getRegistry(GLOBAL)
-  }
-  process.exit()
-}
-
-// default
-if (fs.existsSync(LOCAL)) {
-  var global;
-  try {
-    global = dotjson.get(GLOBAL, REGISTRY_KEY)
-    if (!global) throw new Error()
-  } catch (e) {
-    console.error('could not read global registry')
-    process.exit(1)
-  }
-
-  var setter = {
-    'license': 'proprietary'
-  }
-  setter[REGISTRY_KEY] = global
-
-  dotjson.set(LOCAL, setter)
-  console.log(fs.readFileSync(LOCAL, 'utf8'))
-  console.log(LOCAL + ' protected!')
-} else {
-  console.log('package.json does not exist')
-}
-
-
-function getRegistry(path) {
-  try {
-    var val = dotjson.get(path, REGISTRY_KEY)
-    if (!val) throw new Error()
-    process.stderr.write('registry: ')
-  } catch (e) {
-    console.log('unable to get registry from ' + path)
-  }
 }
