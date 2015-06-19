@@ -27,8 +27,5 @@
     "licenseref"
   ],
   "preferGlobal": true,
-  "publishConfig": {
-    "registry": "http://artifacts.netflix.com/api/npm/npm-local"
-  },
-  "license": "LicenseRef-LICENSE"
+  "license": "SEE LICENSE IN LICENSE"
 }
