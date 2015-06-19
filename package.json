@@ -1,6 +1,6 @@
 {
   "name": "privacy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI utility to modify a package.json to use a private npm registry via publishConfig",
   "main": "index.js",
   "bin": {
@@ -27,5 +27,6 @@
     "licenseref"
   ],
   "preferGlobal": true,
-  "license": "SEE LICENSE IN LICENSE"
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {}
 }
